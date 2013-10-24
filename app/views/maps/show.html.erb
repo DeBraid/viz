@@ -1,0 +1,55 @@
+<h1>Maps View </h1>
+<p>Here will go League maps with their teams, and stats on hover, etc</p>
+
+
+
+<div id="mapbox"></div>
+
+<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+
+<script type="text/javascript">
+// set the size of our map
+var width = 800;
+    height = 800;
+
+// set up the view of the map
+var projection = d3.geo.mercator()
+    .center([80,40]) // default [0,0], North America [100,30]
+    .scale(500)    // default (150). zoom in w/ > values
+    .rotate([-190,0]); // [longitude, latitude, roll], def [0,0,0]
+
+// create svg window
+var svg = d3.select("#mapbox").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+// geo path generator used to specify projection type
+var path = d3.geo.path()
+    .projection(projection);
+// g is our appended svg
+var g = svg.append("g");
+
+
+
+// load and display the world, draws the map for us.
+d3.json("app/assets/javascripts/world.json", function(error, topology) {
+    g.selectAll("path")
+        .data(topojson.feature(topology, topology.objects.countries)
+            .features)
+        .data(topojson.feature(topology, topology.objects.countries)
+            .features) // data that defines countries
+      .enter()
+        .append("path") // act on all path elements
+        .attr("d", path); // add data we're going to display
+
+// add our bootcamps to their geo-location
+
+
+</script>
+
+
+
+
+<p id="notice"><%= notice %></p>
+
+<%= link_to 'Edit', edit_map_path(@map) %> |
+<%= link_to 'Back', maps_path %>
