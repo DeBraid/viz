@@ -1,64 +1,38 @@
-<h1>Tracy is the best EVREER!!</h1>   
-
-<table>
-  <thead>
-    <tr>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @maps.each do |map| %>
-      <tr>
-        <td><%= link_to 'Show', map %></td>
-        <td><%= link_to 'Edit', edit_map_path(map) %></td>
-        <td><%= link_to 'Destroy', map, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Map', new_map_path %>
-  
-  
-  <h2>Fun with Data Viz: Creating shapes.</h2>
-  <p>This is a paragraph with some text.</p>
+<h2>Fun with Data Viz: Creating shapes.</h2>
+<p>This is a paragraph with some text.</p>
 
 <div id="barchart"></div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-var dataset = [10, 12, 15, 20, 22, 24, 33, 80, 40, 50, 70, 80, 150];
+var dataset1 = [10, 12, 15, 20, 22, 24, 33, 80, 40, 50, 70, 80, 150];
 var dataset2 = [1, 3, 5, 6, 7, 14, 10, 20, 25, 35, 40, 76, 300];
 
 var width = 500;
 var height = 350;
 
-var xScale = d3.scale.linear()
-  .domain([0, d3.max(dataset, function(d){ return d; })])
-  .range([0, width]);
-
-var yaxisScale = d3.scale.ordinal()
-  .domain([0, function(d, i) { return i }])
-  .range([height - 130, 0]);  
 
 
-var color = d3.scale.category20b();
+
+var color = d3.scale.category20c();
 
 var canvas = d3.select("#barchart")
   .append("svg")
   .attr("width", width)
-  .attr("height", height);
+  .attr("height", height)
+  .attr("padding", 40);
 
-// draw bars horizontally
+// draw chart
 
 function render(sub) {
 
-  var bars = canvas.selectAll("rect")
+// set up scale
+var xScale = d3.scale.linear()
+  .domain([0, d3.max(sub, function(d){ return d; })])
+  .range([0, width]);        
+
+// add horizontal bars
+var bars = canvas.selectAll("rect")
     .data(sub) 
     .enter() 
         .append("rect")
@@ -72,31 +46,32 @@ function render(sub) {
         .attr("fill", function(d) { return color(d) })
         .attr("x", 50)
         .attr("y", function(d, i) { return i * 15 })
-        .attr("stroke", function(d) { return color(d*25) } 
-        ); 
+        .attr("stroke", function(d) { return color(d*25) }); 
 
-
-// set up axes scale
-var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-var yAxis = d3.svg.axis().scale(yaxisScale).orient("left");
+// set up axis
+var xAxis = d3.svg.axis()
+  .scale(xScale)
+  .orient("bottom")
+  .ticks(6);
 
 // add x-axis
 canvas.append("g")
   .attr("class", "axis")
-  .attr("transform", "translate(35,210)")
+  .attr("transform", "translate(50,220)")
+  .style("opacity", 0.2)
   .call(xAxis);
-
-// Add the y-axis.
-canvas.append("g")
-  .attr("class", "axis")
-  .attr("transform", "translate(35,0)")
-  .call(yAxis);
 
 };
 
-  render(dataset);
+
+  // render(dataset1);
+  render(dataset2);
+
+
 
 </script>
+
+
 
 <style>
 
@@ -106,11 +81,6 @@ canvas.append("g")
   height: 350px;
   border: 1px black solid;
 } 
-
-#axis {
-  margin-top: 50px;
-  border-color: blue;
-}
 
 svg {
   margin-top: 50px;
