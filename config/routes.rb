@@ -1,7 +1,10 @@
 Viz::Application.routes.draw do
+  get "pages/stockchart"
   resources :maps
   
   root :to => 'maps#index'
+
+  get 'maps/stockchart', :to => redirect('/graphview.html')
 
 
   # The priority is based upon order of creation: first created -> highest priority.

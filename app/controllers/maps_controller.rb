@@ -10,6 +10,7 @@ class MapsController < ApplicationController
   # GET /maps/1
   # GET /maps/1.json
   def show
+    @map = Map.new
   end
 
   # GET /maps/new
