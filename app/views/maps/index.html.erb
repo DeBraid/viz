@@ -1,23 +1,45 @@
-<h2>Fun with Data Viz: Creating shapes.</h2>
+<h2>eProf Dashboard Mock-Up</h2>
 
-<h4><%= link_to "Example 2: Stock Chart", pages_stockchart_path %></h4>
+<!-- <h4><%= link_to "Example 2: Stock Chart", pages_stockchart_path %></h4> -->
 
 
 <br />
 <br />
-<button id="dataToggle">Data Toggle</button>
-<a href="#" id="dataReset">Reset Data</a>
 
-<div id="barchart"></div>
+
+
+<div id="dashboard"> 
+  
+  <div id="barchart">
+    <button id="dataToggle">Data Toggle</button>
+    <a href="#" id="dataReset">Reset Data</a>
+  </div>
+  
+  <div id="barchart2">
+    <button id="dataToggle2">Data Toggle</button>
+    <a href="#" id="dataReset2">Reset Data</a>
+  </div>
+
+  <div id="barchart3">
+    <button id="dataToggle3">Data Toggle</button>
+    <a href="#" id="dataReset3">Reset Data</a>
+  </div>
+
+</div>
+
+
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-var dataset1 = [10, 12, 15, 20, 22, 24, 33, 40, 42, 43, 46, 50, 80, 31];
+var dataset1 = [1, 3, 5, 6, 7, 14, 10, 20, 22, 25, 26, 35, 55, 76];
+var dataset2 = [4, 3, 2, 6, 7, 1, 10, 12, 10, 5, 9, 22, 55, 76];
+
+var dataset3 = [20, 22, 25, 26, 35, 55, 76];
 
 
-var width = 700;
-var height = 350;
+var width = 350;
+var height = 250;
 
 var color = d3.scale.category20c();
 
@@ -27,21 +49,164 @@ var canvas = d3.select("#barchart")
   .attr("height", height)
   .attr("padding", 40);
 
-// function drawBars() {
-       
-//   .transition()
-//   .delay(function (d,i) { return i * 200; })
-//   .duration( function(d,i){ return d * 100; })
-//   .attr("width", function(d) { return xScale(d); }) 
-//   .attr("height", 10)
-//   .attr("fill", function(d) { return color(d) })
-//   .attr("x", 50)
-//   .attr("y", function(d, i) { return i * 15 })
-//   .attr("stroke", function(d) { return color(d*25) });
-// };
+
+function render(sub) {
+
+// set up scale
+var xScale = d3.scale.linear()
+  .domain([0, d3.max(sub, function(d){ return d; })])
+  .range([0, width]);        
+
+// add horizontal bars
+var bars = canvas.selectAll("rect")
+    .data(sub) 
+    .enter() 
+    .append("rect")
+    .attr("class", "bars")
+    .transition()
+    .delay(function (d,i) {
+      return i * 200;
+    })
+    .duration( function(d,i){ return d * 100; })
+    .attr("width", function(d) { return xScale(d); }) 
+    .attr("height", 10)
+    .attr("fill", function(d) { return color(d) })
+    .attr("x", 50)
+    .attr("y", function(d, i) { return i * 15 })
+    .attr("stroke", function(d) { return color(d*25) })
+    .on("mouseover", function(){
+      d3.select(this).attr("stroke", "orange");
+    })
+    .on("mouseout", function(){
+      d3.select(this).attr("stroke", "green");
+    });
+
+// set up axis
+var xAxis = d3.svg.axis()
+  .scale(xScale)
+  .orient("bottom")
+  .ticks(6);
+
+// add x-axis
+canvas.append("g")
+  .attr("class", "axis")
+  .attr("transform", "translate(50,220)")
+  .style("opacity", 0.2)
+  .call(xAxis);
 
 
-// draw chart
+
+d3.select("#dataToggle")
+  .on("click", function() {
+  
+    dataset2 = [10, 12, 15, 20, 22, 24, 33, 40, 42, 43, 46, 50, 80, 31];
+    
+  canvas.selectAll('rect')
+    .data(dataset2)
+    .transition()
+    .delay(function (d,i) {
+          return i * 200;
+    })
+    .duration( function(d,i){ return d * 100; })
+    .attr("width", function(d) { return xScale(d); }) 
+    .attr("height", 10)
+    .attr("fill", function(d) { return color(d) })
+    .attr("x", 50)
+    .attr("y", function(d, i) { return i * 15 })
+    .attr("stroke", function(d) { return color(d*25) })
+  });
+
+};
+
+  render(dataset1);
+
+// 
+// draw chart2
+// 
+
+var canvas = d3.select("#barchart2")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height)
+  .attr("padding", 40);
+
+
+function render(sub) {
+
+// set up scale
+var xScale = d3.scale.linear()
+  .domain([0, d3.max(sub, function(d){ return d; })])
+  .range([0, width]);        
+
+// add horizontal bars
+var bars = canvas.selectAll("rect")
+    .data(sub) 
+    .enter() 
+    .append("rect")
+    .attr("class", "bars")
+    .transition()
+    .delay(function (d,i) {
+      return i * 200;
+    })
+    .duration( function(d,i){ return d * 100; })
+    .attr("height", function(d) { return xScale(d); }) 
+    .attr("width", 10)
+    .attr("fill", function(d) { return color(d) })
+    .attr("y", 5000)
+    .attr("x", function(d, i) { return i * 15 })
+    .attr("stroke", function(d) { return color(d*25) });
+
+// set up axis
+var xAxis = d3.svg.axis()
+  .scale(xScale)
+  .orient("bottom")
+  .ticks(6);
+
+// add x-axis
+canvas.append("g")
+  .attr("class", "axis")
+  .attr("transform", "translate(50,220)")
+  .style("opacity", 0.2)
+  .call(xAxis);
+
+
+
+d3.select("#dataToggle2")
+  .on("click", function() {
+  
+    dataset2 = [10, 12, 15, 20, 22, 24, 33, 40, 42, 43, 46, 50, 80, 31];
+    
+  canvas.selectAll('rect')
+    .data(dataset2)
+    .transition()
+    .delay(function (d,i) {
+          return i * 200;
+    })
+    .duration( function(d,i){ return d * 100; })
+    .attr("width", function(d) { return xScale(d); }) 
+    .attr("height", 10)
+    .attr("fill", function(d) { return color(d) })
+    .attr("x", 50)
+    .attr("y", function(d, i) { return i * 15 })
+    .attr("stroke", function(d) { return color(d*25) })
+  });
+
+
+
+};
+
+  render(dataset3);
+  
+// 
+// draw chart3
+// 
+
+var canvas = d3.select("#barchart3")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height)
+  .attr("padding", 40);
+
 
 function render(sub) {
 
@@ -72,7 +237,7 @@ var bars = canvas.selectAll("rect")
 var xAxis = d3.svg.axis()
   .scale(xScale)
   .orient("bottom")
-  .ticks(6);
+  .ticks(3);
 
 // add x-axis
 canvas.append("g")
@@ -83,10 +248,10 @@ canvas.append("g")
 
 
 
-d3.select("#dataToggle")
+d3.select("#dataToggle3")
   .on("click", function() {
   
-    dataset2 = [1, 3, 5, 6, 7, 14, 10, 20, 25, 35, 40, 46, 55, 57, 58];
+    dataset2 = [10, 12, 15, 20, 22, 24, 33, 40, 42, 43, 46, 50, 80, 31];
     
   canvas.selectAll('rect')
     .data(dataset2)
@@ -105,13 +270,25 @@ d3.select("#dataToggle")
 
 };
 
-  render(dataset1);
+
+ // jQuery 
+  
+$(document).ready(function() {
+
   
 $('#dataToggle').hover(function() {
   $(this).css({color: "blue" })
 });
 
 $('#dataReset').click( render(dataset1) );
+
+$('#dataToggle2').hover(function() {
+  $(this).css({color: "blue" })
+});
+
+$('#dataReset2').click( render(dataset3) );
+
+}); 
 
 // $('#dataToggle').hover(function() {$('this').css({background-color: "aliceblue" })});
 
@@ -121,15 +298,22 @@ $('#dataReset').click( render(dataset1) );
 
 body {
     margin-left: 20px;
-
 }
 
-#barchart {
+#dashboard {
+border: 2px black solid;
+}
+
+#barchart, #barchart2, #barchart3 {
+  float: left;
   background-color: aliceblue;
-  width: 70%;
+  width: 32%;
   height: 350px;
   border: 1px blue solid;
+  margin-right: 5px;
+
 } 
+
 
 svg {
   margin-top: 50px;
